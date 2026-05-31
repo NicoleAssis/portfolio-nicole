@@ -15,9 +15,9 @@ function HeroSection() {
       </h1>
       <p
         className="text-sky-300 font-semibold tracking-widest mb-3 text-sm md:text-base"
-        aria-label="Engenheira de Software"
+        aria-label="Estudante em Engenharia de Software"
       >
-        Estudante em Engenharia de Software
+        Estudante em Engenharia de Software, em busca de desenvolvimento Full Stack ou Front-end.
       </p>
 
 
