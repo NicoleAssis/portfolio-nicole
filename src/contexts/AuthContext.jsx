@@ -29,7 +29,7 @@ export function AuthProvider({ children }) {
     setUser(null);
     // Remove o estado salvo da sessão (garanta que essa chave é a mesma usada no saveState)
     localStorage.removeItem("study-planner-state"); 
-    window.location.href = "/";
+   
   };
 
   return (
