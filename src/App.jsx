@@ -7,11 +7,8 @@ function App() {
   return (
     <Router> 
       <Routes>
-        {/* Telas Públicas */}
         <Route path="/" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        
-        {/* Painel do Portfólio (Onde a mágica acontece) */}
         <Route path="/welcome" element={<WelcomePage />} />
       </Routes>
     </Router>
