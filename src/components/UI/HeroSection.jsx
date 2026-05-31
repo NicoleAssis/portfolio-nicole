@@ -7,25 +7,26 @@ function HeroSection() {
       aria-label="Seção principal de apresentação"
       className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-indigo-950 to-slate-950 text-center px-6"
     >
-      <p
-        className="text-sky-300 font-semibold tracking-widest mb-3 text-sm md:text-base"
-        aria-label="Engenheira de Software"
-      >
-        ENGENHEIRA DE SOFTWARE
-      </p>
-
       <h1
         className="text-5xl md:text-7xl font-extrabold bg-gradient-to-r from-white to-pink-400 bg-clip-text text-transparent mb-4"
         aria-label="Nicole Assis"
       >
         Nicole Assis
       </h1>
+      <p
+        className="text-sky-300 font-semibold tracking-widest mb-3 text-sm md:text-base"
+        aria-label="Engenheira de Software"
+      >
+        Estudante em Engenharia de Software
+      </p>
+
+
 
       <p
         className="text-sky-200 text-base md:text-xl font-medium max-w-xl mx-auto leading-relaxed"
         aria-label="Analista de Dados para Performance Industrial"
       >
-        Analista de Dados para Performance Industrial
+
       </p>
 
       {/* Botão com scroll suave */}
