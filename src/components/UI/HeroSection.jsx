@@ -20,14 +20,17 @@ function HeroSection() {
         Estudante em Engenharia de Software, em busca de desenvolvimento Full Stack ou Front-end.
       </p>
 
-
-
       <p
-        className="text-sky-200 text-base md:text-xl font-medium max-w-xl mx-auto leading-relaxed"
-        aria-label="Analista de Dados para Performance Industrial"
+         className="text-sky-200 text-base md:text-xl font-medium max-w-xl mx-auto leading-relaxed"
+        aria-label="Estudante em Engenharia de Software, em busca de desenvolvimento Full Stack ou Front-end."
       >
-
+        Estudante em Engenharia de Software, em busca de desenvolvimento Full Stack ou Front-end.
       </p>
+
+
+
+    
+      
 
       {/* Botão com scroll suave */}
       <a
