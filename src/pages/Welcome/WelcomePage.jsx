@@ -3,24 +3,27 @@ import { AuthContext } from "../../contexts/AuthContext";
 import Sidebar from "../../components/UI/Sidebar";
 import HeroSection from "../../components/UI/HeroSection";
 import CareerSection from "../../components/UI/CareerSection";
-import ProjectsGrid from "../../components/UI/ProjectsGrid";
+import ProjectsPage from "../Projects/ProjectsPage"; 
 import AcademicPage from "../Academic/AcademicPage";
 import ContactPage from "../Contact/ContactPage";
 import Footer from "../../components/UI/Footer";
-import AboutMe from "../../components/UI/AboutMe"; // ✅ corrigido
+import AboutMe from "../../components/UI/AboutMe";
 
 function WelcomePage() {
   const { user } = useContext(AuthContext);
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex">
-      {/* Sidebar fixa */}
+      {/* Sidebar fixa lateral */}
       <Sidebar />
 
-      {/* Conteúdo principal */}
+      {/* Conteúdo principal com scroll controlado */}
       <main className="flex-1 ml-72 overflow-y-auto scroll-smooth text-lg leading-relaxed">
-        {/* Seção de apresentação */}
-        <HeroSection />
+        
+        {/* Seção de apresentação (Início) */}
+        <section id="hero">
+          <HeroSection />
+        </section>
 
         {/* Seção sobre mim */}
         <section id="about" className="py-24 px-6">
@@ -32,9 +35,9 @@ function WelcomePage() {
           <CareerSection />
         </section>
 
-        {/* Seção de projetos */}
+        {/* Seção de projetos (Onde roda o seu Scrum) */}
         <section id="projects" className="py-24 px-6">
-          <ProjectsGrid />
+          <ProjectsPage />
         </section>
 
         {/* Seção de formação acadêmica */}
