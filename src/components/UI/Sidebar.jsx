@@ -1,16 +1,15 @@
 import React, { useContext } from "react";
-import { useNavigate } from "react-router-dom"; // 👈 1. Importe o useNavigate
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
 
 function Sidebar() {
   const { logout } = useContext(AuthContext);
-  const navigate = useNavigate(); // 👈 2. Inicialize o hook de navegação
+  const navigate = useNavigate();
 
   const handleLogout = () => {
-    // Primeiro limpa os dados do contexto/localStorage usando a sua função atual
+    // Limpa a sessão no Context / LocalStorage
     logout(); 
-    
-    // Depois, força o React Router a te levar para a tela de login de forma segura
+    // Redireciona de forma segura para a raiz (Login) do HashRouter
     navigate("/"); 
   };
 
@@ -25,30 +24,31 @@ function Sidebar() {
           Nicole Assis
         </h1>
 
+        {/* Links ajustados com a rota mãe #/welcome antes de cada ID de seção */}
         <nav className="flex flex-col space-y-6 text-slate-200 font-medium text-lg">
-          <a href="#hero" className="hover:text-pink-400 focus:text-pink-400 transition">
+          <a href="#/welcome#hero" className="hover:text-pink-400 focus:text-pink-400 transition">
             Início
           </a>
-          <a href="#about" className="hover:text-pink-400 focus:text-pink-400 transition">
+          <a href="#/welcome#about" className="hover:text-pink-400 focus:text-pink-400 transition">
             Sobre mim
           </a>
-          <a href="#career" className="hover:text-pink-400 focus:text-pink-400 transition">
+          <a href="#/welcome#career" className="hover:text-pink-400 focus:text-pink-400 transition">
             Carreira
           </a>
-          <a href="#projects" className="hover:text-pink-400 focus:text-pink-400 transition">
+          <a href="#/welcome#projects" className="hover:text-pink-400 focus:text-pink-400 transition">
             Projetos
           </a>
-          <a href="#academic" className="hover:text-pink-400 focus:text-pink-400 transition">
+          <a href="#/welcome#academic" className="hover:text-pink-400 focus:text-pink-400 transition">
             Formação
           </a>
-          <a href="#contact" className="hover:text-pink-400 focus:text-pink-400 transition">
+          <a href="#/welcome#contact" className="hover:text-pink-400 focus:text-pink-400 transition">
             Contato
           </a>
         </nav>
       </div>
 
       <button
-        onClick={handleLogout} // 👈 3. Trocou para a nova função que desloga e navega
+        onClick={handleLogout}
         className="mt-10 px-6 py-3 rounded-full bg-gradient-to-r from-blue-500 to-pink-400 text-white font-semibold text-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-pink-400 transition"
       >
         Sair

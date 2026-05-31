@@ -1,4 +1,5 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
 import Sidebar from "../../components/UI/Sidebar";
 import HeroSection from "../../components/UI/HeroSection";
@@ -11,16 +12,37 @@ import AboutMe from "../../components/UI/AboutMe";
 
 function WelcomePage() {
   const { user } = useContext(AuthContext);
+  const location = useLocation();
+
+  // Captura a alteração da URL e rola a tela até a seção correspondente
+  useEffect(() => {
+    // Divide a hash para pegar o ID real da seção (ex: "about" de "#/welcome#about")
+    const hashParts = window.location.hash.split('#');
+    const targetId = hashParts[2]; 
+
+    if (targetId) {
+      const element = document.getElementById(targetId);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    } else if (hashParts[1] === "/welcome" && !targetId) {
+      // Se clicou em "Início" ou voltou para o topo, rola para o hero
+      const heroElement = document.getElementById("hero");
+      if (heroElement) {
+        heroElement.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  }, [location]); // Monitora cliques nos links da Sidebar
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex">
-      {/* Sidebar fixa lateral */}
+      {/* Sidebar fixa */}
       <Sidebar />
 
-      {/* Conteúdo principal com scroll controlado */}
+      {/* Conteúdo principal */}
       <main className="flex-1 ml-72 overflow-y-auto scroll-smooth text-lg leading-relaxed">
         
-        {/* Seção de apresentação (Início) */}
+        {/* Seção de apresentação */}
         <section id="hero">
           <HeroSection />
         </section>
