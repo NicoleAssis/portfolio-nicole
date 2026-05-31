@@ -1,116 +1,167 @@
-import React, { useState, useContext } from "react";
-import SubmitButton from "../UI/SubmitButton";
-import { AuthContext } from "../../contexts/AuthContext";
-import { registerSchema } from "../../validations/registerSchema";
-import { Link } from "react-router-dom";
-import FormField from "../UI/FormField";
-import PopupMessage from "../UI/PopupMessage";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+// Importa o arquivo json diretamente para checar e-mails duplicados em modo offline
+import dbData from "../../../db.json";
 
 function RegisterForm() {
-  const { login } = useContext(AuthContext);
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: ""
-  });
-  const [errors, setErrors] = useState({});
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleRegister = async () => {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+
+    // Validação básica de senha
+    if (password !== confirmPassword) {
+      setError("As senhas não coincidem.");
+      return;
+    }
+
+    setLoading(true);
+
+    const newUser = {
+      name,
+      email,
+      password,
+      id: Math.random().toString(36).substr(2, 9), // Gera um ID aleatório simples
+    };
+
     try {
-      registerSchema.parse(formData);
+      // 1. Tenta fazer a requisição POST normal para o seu json-server local
+      const response = await fetch("http://localhost:5000/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newUser),
+      });
 
-      const existing = await fetch(`http://localhost:5000/users?email=${formData.email}`);
-      const users = await existing.json();
-      if (users.length > 0) {
-        setErrors({ email: "Email já cadastrado" });
-        setSuccess("");
+      if (!response.ok) {
+        throw new Error("Servidor offline");
+      }
+
+      setSuccess("Cadastro realizado com sucesso!");
+      setTimeout(() => navigate("/"), 2000); // Redireciona para o login
+
+    } catch (err) {
+      // 2. SE CAIR NO CATCH (Modo Deploy / GitHub Pages): Ativa o salvamento local gratuito
+      console.log("Modo offline/deploy ativo: simulando cadastro no localStorage.");
+
+      // Busca os usuários locais já cadastrados anteriormente
+      const localUsers = JSON.parse(localStorage.getItem("local_users")) || [];
+      
+      // Une a lista do db.json com os cadastros locais para verificar duplicidade
+      const allUsers = [...dbData.users, ...localUsers];
+      const emailExists = allUsers.some((u) => u.email === email);
+
+      if (emailExists) {
+        setError("Este e-mail já está cadastrado.");
+        setLoading(false);
         return;
       }
 
-      const res = await fetch("http://localhost:5000/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          password: formData.password
-        })
-      });
+      // Adiciona o novo usuário na lista do localStorage
+      localUsers.push(newUser);
+      localStorage.setItem("local_users", JSON.stringify(localUsers));
 
-      if (!res.ok) throw new Error("Erro ao cadastrar usuário");
-
-      const newUser = await res.json();
-      login(newUser);
-      setSuccess("Cadastro realizado com sucesso!");
-      setErrors({});
-    } catch (err) {
-      if (err.errors) {
-        const formatted = {};
-        err.errors.forEach((e) => {
-          formatted[e.path[0]] = e.message;
-        });
-        setErrors(formatted);
-        setSuccess("");
-      } else {
-        setErrors({ general: err.message });
-        setSuccess("");
-      }
+      setSuccess("Cadastro simulado com sucesso no navegador!");
+      setTimeout(() => navigate("/"), 2000);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="bg-black/40 backdrop-blur-md p-10 rounded-xl w-[28rem] text-white shadow-lg">
-      <h2 className="text-5xl font-semibold mb-10">Cadastro</h2>
+    <div className="w-full max-w-md p-8 bg-slate-900 rounded-lg shadow-lg text-white">
+      <h2 className="text-3xl font-bold text-center mb-6">Cadastro</h2>
 
-      <FormField
-        label="Nome completo"
-        type="text"
-        placeholder="Seu nome"
-        value={formData.name}
-        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-        error={errors.name}
-      />
+      {error && (
+        <div className="p-3 mb-4 text-sm bg-red-500/20 border border-red-500 text-red-200 rounded-md text-center">
+          {error}
+        </div>
+      )}
 
-      <FormField
-        label="Email"
-        type="email"
-        placeholder="seuemail@gmail.com"
-        value={formData.email}
-        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-        error={errors.email}
-      />
+      {success && (
+        <div className="p-3 mb-4 text-sm bg-green-500/20 border border-green-500 text-green-200 rounded-md text-center">
+          {success}
+        </div>
+      )}
 
-      <FormField
-        label="Senha"
-        type="password"
-        placeholder="••••••••"
-        value={formData.password}
-        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-        error={errors.password}
-      />
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium mb-1">Nome completo</label>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-md focus:outline-none focus:border-pink-500 text-white"
+            placeholder="Seu nome"
+          />
+        </div>
 
-      <FormField
-        label="Confirmar senha"
-        type="password"
-        placeholder="••••••••"
-        value={formData.confirmPassword}
-        onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-        error={errors.confirmPassword}
-      />
+        <div>
+          <label className="block text-sm font-medium mb-1">E-mail</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-md focus:outline-none focus:border-pink-500 text-white"
+            placeholder="exemplo@gmail.com"
+          />
+        </div>
 
-      <SubmitButton text="Cadastrar" onClick={handleRegister} />
+        <div>
+          <label className="block text-sm font-medium mb-1">Senha</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-md focus:outline-none focus:border-pink-500 text-white"
+            placeholder="••••••••"
+          />
+        </div>
 
-      <p className="mt-6 text-center text-sm text-gray-300">
-        Não tem conta?{" "}
-        <Link to="/" className="text-pink-400 hover:underline">
+        <div>
+          <label className="block text-sm font-medium mb-1">Confirmar senha</label>
+          <input
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+            className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-md focus:outline-none focus:border-pink-500 text-white"
+            placeholder="••••••••"
+          />
+        </div>
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full py-3 px-4 bg-gradient-to-r from-pink-500 to-red-500 text-white rounded-md font-medium hover:opacity-90 transition disabled:opacity-50"
+        >
+          {loading ? "Processando..." : "Cadastrar"}
+        </button>
+      </form>
+
+      <p className="mt-4 text-center text-sm text-gray-400">
+        Já tem conta?{" "}
+        <span
+          onClick={() => navigate("/")}
+          className="text-pink-500 hover:underline cursor-pointer"
+        >
           Login
-        </Link>
+        </span>
       </p>
-
-      <PopupMessage message={errors.general} type="error" />
-      <PopupMessage message={success} type="success" />
     </div>
   );
 }
