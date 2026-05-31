@@ -18,8 +18,16 @@ function LoginForm() {
     setError("");
     setLoading(true);
 
+    // Evita o delay de requisição quebrada se o app já estiver rodando em produção
+    const isGitHubPages = window.location.hostname.includes("github.io");
+
+    if (isGitHubPages) {
+      handleOfflineLogin();
+      return;
+    }
+
     try {
-      // 1. Tenta fazer a requisição normal para o seu json-server local
+      // Tenta fazer a requisição normal para o seu json-server local
       const response = await fetch("http://localhost:5000/users");
       
       if (!response.ok) {
@@ -39,33 +47,36 @@ function LoginForm() {
       }
 
     } catch (err) {
-      // 2. SE CAIR NO CATCH (Modo Deploy / GitHub Pages): Ativa a simulação gratuita
-      console.log("Modo offline/deploy ativo: simulando banco de dados local.");
-
-      // Busca os usuários recém-cadastrados no localStorage (se houver)
-      const localUsers = JSON.parse(localStorage.getItem("local_users")) || [];
-      
-      // Une os usuários padrões do seu db.json com os novos criados pelo recrutador
-      const allUsers = [...dbData.users, ...localUsers];
-
-      const foundUser = allUsers.find(
-        (u) => u.email === email && u.password === password
-      );
-
-      if (foundUser) {
-        // Loga o usuário usando o seu AuthContext
-        login({ name: foundUser.name, email: foundUser.email });
-        navigate("/welcome");
-      } else {
-        setError("E-mail ou senha incorretos.");
-      }
+      handleOfflineLogin();
     } finally {
       setLoading(false);
     }
   };
 
+  const handleOfflineLogin = () => {
+    console.log("Modo offline/deploy ativo: simulando banco de dados local.");
+
+    // Busca os usuários recém-cadastrados no localStorage (se houver)
+    const localUsers = JSON.parse(localStorage.getItem("local_users")) || [];
+    
+    // Une os usuários padrões do seu db.json com os novos criados pelo recrutador
+    const allUsers = [...dbData.users, ...localUsers];
+
+    const foundUser = allUsers.find(
+      (u) => u.email === email && u.password === password
+    );
+
+    if (foundUser) {
+      login({ name: foundUser.name, email: foundUser.email });
+      navigate("/welcome");
+    } else {
+      setError("E-mail ou senha incorretos.");
+    }
+    setLoading(false);
+  };
+
   return (
-    <div className="w-full max-w-md p-8 bg-slate-900 rounded-lg shadow-lg text-white">
+    <div className="w-full max-w-xl p-8 bg-slate-900 rounded-2xl shadow-2xl text-white border border-slate-800">
       <h2 className="text-3xl font-bold text-center mb-6">Login</h2>
       
       {error && (

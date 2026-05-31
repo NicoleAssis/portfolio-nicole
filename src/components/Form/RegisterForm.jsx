@@ -34,8 +34,16 @@ function RegisterForm() {
       id: Math.random().toString(36).substr(2, 9), // Gera um ID aleatório simples
     };
 
+    // Se estiver rodando no GitHub Pages, pula a requisição local direto para o localStorage
+    const isGitHubPages = window.location.hostname.includes("github.io");
+
+    if (isGitHubPages) {
+      handleOfflineRegister(newUser);
+      return;
+    }
+
     try {
-      // 1. Tenta fazer a requisição POST normal para o seu json-server local
+      // Tenta fazer a requisição POST normal para o seu json-server local
       const response = await fetch("http://localhost:5000/users", {
         method: "POST",
         headers: {
@@ -52,35 +60,39 @@ function RegisterForm() {
       setTimeout(() => navigate("/"), 2000); // Redireciona para o login
 
     } catch (err) {
-      // 2. SE CAIR NO CATCH (Modo Deploy / GitHub Pages): Ativa o salvamento local gratuito
-      console.log("Modo offline/deploy ativo: simulando cadastro no localStorage.");
-
-      // Busca os usuários locais já cadastrados anteriormente
-      const localUsers = JSON.parse(localStorage.getItem("local_users")) || [];
-      
-      // Une a lista do db.json com os cadastros locais para verificar duplicidade
-      const allUsers = [...dbData.users, ...localUsers];
-      const emailExists = allUsers.some((u) => u.email === email);
-
-      if (emailExists) {
-        setError("Este e-mail já está cadastrado.");
-        setLoading(false);
-        return;
-      }
-
-      // Adiciona o novo usuário na lista do localStorage
-      localUsers.push(newUser);
-      localStorage.setItem("local_users", JSON.stringify(localUsers));
-
-      setSuccess("Cadastro simulado com sucesso no navegador!");
-      setTimeout(() => navigate("/"), 2000);
+      handleOfflineRegister(newUser);
     } finally {
       setLoading(false);
     }
   };
 
+  const handleOfflineRegister = (newUser) => {
+    console.log("Modo offline/deploy ativo: simulando cadastro no localStorage.");
+
+    // Busca os usuários locais já cadastrados anteriormente
+    const localUsers = JSON.parse(localStorage.getItem("local_users")) || [];
+    
+    // Une a lista do db.json com os cadastros locais para verificar duplicidade
+    const allUsers = [...dbData.users, ...localUsers];
+    const emailExists = allUsers.some((u) => u.email === email);
+
+    if (emailExists) {
+      setError("Este e-mail já está cadastrado.");
+      setLoading(false);
+      return;
+    }
+
+    // Adiciona o novo usuário na lista do localStorage
+    localUsers.push(newUser);
+    localStorage.setItem("local_users", JSON.stringify(localUsers));
+
+    setSuccess("Cadastro simulado com sucesso no navegador!");
+    setLoading(false);
+    setTimeout(() => navigate("/"), 2000);
+  };
+
   return (
-    <div className="w-full max-w-md p-8 bg-slate-900 rounded-lg shadow-lg text-white">
+    <div className="w-full max-w-xl p-8 bg-slate-900 rounded-2xl shadow-2xl text-white border border-slate-800">
       <h2 className="text-3xl font-bold text-center mb-6">Cadastro</h2>
 
       {error && (
