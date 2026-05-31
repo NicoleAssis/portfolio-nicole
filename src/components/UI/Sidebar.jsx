@@ -1,8 +1,18 @@
 import React, { useContext } from "react";
+import { useNavigate } from "react-router-dom"; // 👈 1. Importe o useNavigate
 import { AuthContext } from "../../contexts/AuthContext";
 
 function Sidebar() {
   const { logout } = useContext(AuthContext);
+  const navigate = useNavigate(); // 👈 2. Inicialize o hook de navegação
+
+  const handleLogout = () => {
+    // Primeiro limpa os dados do contexto/localStorage usando a sua função atual
+    logout(); 
+    
+    // Depois, força o React Router a te levar para a tela de login de forma segura
+    navigate("/"); 
+  };
 
   return (
     <aside
@@ -38,7 +48,7 @@ function Sidebar() {
       </div>
 
       <button
-        onClick={logout}
+        onClick={handleLogout} // 👈 3. Trocou para a nova função que desloga e navega
         className="mt-10 px-6 py-3 rounded-full bg-gradient-to-r from-blue-500 to-pink-400 text-white font-semibold text-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-pink-400 transition"
       >
         Sair
