@@ -1,0 +1,47 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "name": "Nicole",
+      "email": "nicole@example.com",
+      "password": "123456"
+    },
+    {
+      "id": "2",
+      "name": "João",
+      "email": "joao@example.com",
+      "password": "abcdef"
+    },
+    {
+      "name": "Nicole",
+      "email": "nicassissiqueira@gmail.com",
+      "password": "123456",
+      "id": "rtEeLT1xzXU"
+    },
+    {
+      "name": "Nicole Assis",
+      "email": "nicassis@gmail.com",
+      "password": "123456",
+      "id": "bctJoqCUrSc"
+    },
+    {
+      "name": "Nicole",
+      "email": "nicassis1@gmail.com",
+      "password": "123456",
+      "id": "ULieZRiF0Dk"
+    },
+    {
+      "name": "Nicole Assis",
+      "email": "nicassis2@gmail.com",
+      "password": "123456",
+      "id": "Oigo1g9N_3g"
+    },
+    {
+      "name": "Administrador",
+      "email": "admin@gmail.com",
+      "password": "admin123",
+      "id": "Lub9xqv5ntI"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
