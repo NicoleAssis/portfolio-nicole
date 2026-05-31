@@ -18,7 +18,7 @@ function HeroSection() {
 
       {/* Descrição Principal (O texto que descreve seu objetivo) */}
       <p className="text-sky-200 text-base md:text-xl font-medium max-w-xl mx-auto leading-relaxed">
-        Estudante em busca de oportunidades em desenvolvimento **Full Stack** ou **Front-end**. Apaixonada por criar soluções eficientes e designs modernos.
+        Estudante em busca de oportunidades em desenvolvimento <strong className="font-bold text-white">Full Stack</strong> ou <strong className="font-bold text-white">Front-end</strong>. Apaixonada por criar soluções eficientes e designs modernos.
       </p>
 
       {/* Botão com scroll suave */}
